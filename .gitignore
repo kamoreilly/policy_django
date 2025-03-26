@@ -9,7 +9,8 @@ static/
 
 # Virtual Environment
 venv/
-.env/
+.env
+.env.production
 
 # IDE
 .vscode/
@@ -53,6 +54,7 @@ override/
 *.bak
 *.swp
 *.swo
+*.sqlite3
 *.sqlite3.backup
 
 # Testing
