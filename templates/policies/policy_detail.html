@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ policy.title }} - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ policy.title }}</h4>
+                    <span class="badge {% if policy.status == 'published' %}bg-success{% elif policy.status == 'draft' %}bg-warning{% else %}bg-secondary{% endif %}">
+                        {{ policy.get_status_display }}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Summary</h5>
+                    <p>{{ policy.summary }}</p>
+                </div>
+                
+                <div class="mb-4">
+                    <h5>Policy Content</h5>
+                    <div class="policy-content border rounded p-3 bg-light">
+                        {{ policy.content|linebreaks }}
+                    </div>
+                </div>
+                
+                {% if policy.document_file %}
+                <div class="mb-4">
+                    <h5>Attached Documents</h5>
+                    <div class="list-group">
+                        <a href="{{ policy.document_file.url }}" class="list-group-item list-group-item-action" target="_blank">
+                            <i class="fas fa-file me-2"></i>
+                            Download Original Document
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <small class="text-muted">Policy #: {{ policy.policy_number }}</small><br>
+                        <small class="text-muted">Category: {{ policy.category.name }}</small>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-muted">Effective Date: {{ policy.effective_date|date:"F j, Y" }}</small><br>
+                        <small class="text-muted">Review Date: {{ policy.review_date|date:"F j, Y" }}</small>
+                        {% if policy.needs_review %}
+                        <span class="ms-2 badge bg-danger">Review Needed</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group">
+                    
+                    {% if user.profile.is_admin or user.profile.is_moderator %}
+                    <a href="{% url 'policies:policy-update' policy.id %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit me-2"></i> Edit Policy
+                    </a>
+                    <a href="{% url 'policies:policy-delete' policy.id %}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-trash me-2"></i> Delete Policy
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'policies:policy-list' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Policies
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Policy Information</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Created:</span>
+                        <small>{{ policy.created_at|date:"M d, Y" }}</small>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Last Updated:</span>
+                        <small>{{ policy.updated_at|date:"M d, Y" }}</small>
+                    </li>
+                    {% if policy.created_by %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Created By:</span>
+                        <small>{{ policy.created_by.get_full_name|default:policy.created_by.username }}</small>
+                    </li>
+                    {% endif %}
+                    {% if policy.updated_by %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>Updated By:</span>
+                        <small>{{ policy.updated_by.get_full_name|default:policy.updated_by.username }}</small>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

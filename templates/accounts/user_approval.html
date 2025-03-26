@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}User Approval - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-user-check me-2"></i>User Approval Management</h4>
+                <a href="{% url 'admin-dashboard' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+            <div class="card-body">
+                {% if pending_users %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Registration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in pending_users %}
+                            <tr>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.get_full_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.profile.department|default:"Not specified" }}</td>
+                                <td>{{ user.date_joined|date:"M d, Y H:i" }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="{% url 'approve-user' user.pk %}" class="btn btn-success">
+                                            <i class="fas fa-check me-1"></i>Approve
+                                        </a>
+                                        <a href="{% url 'reject-user' user.pk %}" class="btn btn-danger">
+                                            <i class="fas fa-times me-1"></i>Reject
+                                        </a>
+                                        <a href="{% url 'user-edit' user.pk %}" class="btn btn-info">
+                                            <i class="fas fa-edit me-1"></i>Edit
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>No pending user registrations at this time.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Approval Confirmation Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to <span id="actionType"></span> this user?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirmButton" class="btn">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle approval/rejection confirmation
+    const approvalModal = document.getElementById('approvalModal');
+    const actionTypeSpan = document.getElementById('actionType');
+    const confirmButton = document.getElementById('confirmButton');
+    
+    document.querySelectorAll('[data-action]').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const action = this.dataset.action;
+            const url = this.href;
+            
+            actionTypeSpan.textContent = action;
+            confirmButton.href = url;
+            confirmButton.className = `btn btn-${action === 'approve' ? 'success' : 'danger'}`;
+            
+            const modal = new bootstrap.Modal(approvalModal);
+            modal.show();
+        });
+    });
+});
+</script>
+{% endblock %}

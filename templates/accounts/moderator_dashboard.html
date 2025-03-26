@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Moderator Dashboard - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-th-large me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#policies" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="fas fa-file-alt me-2"></i>Review Policies
+                </a>
+                <a href="#statistics" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-chart-bar me-2"></i>Statistics
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <div class="tab-content">
+            <!-- Policies Tab -->
+            <div class="tab-pane fade show active" id="policies">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Policy Management</h5>
+                        <a href="{% url 'policies:policy-create' %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus me-1"></i>New Policy
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search and Filter -->
+                        <div class="row mb-3">
+                            <div class="col">
+                                <form method="get" class="row g-3" hx-get="{% url 'policies:htmx-policy-list' %}" hx-target="#policy-list" hx-trigger="submit, change">
+                                    <div class="col-md-4">
+                                        {{ search_form.query }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ search_form.category }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ search_form.status }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Policy List -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Policy Number</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th>Review Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for policy in policies %}
+                                    <tr>
+                                        <td>{{ policy.policy_number }}</td>
+                                        <td>{{ policy.title }}</td>
+                                        <td>{{ policy.category.name }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if policy.status == 'published' %}success{% elif policy.status == 'draft' %}warning{% else %}secondary{% endif %}">
+                                                {{ policy.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ policy.review_date }}
+                                            {% if policy.needs_review %}
+                                            <span class="badge bg-danger ms-1">Review Needed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'policies:policy-detail' policy.pk %}" class="btn btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'policies:policy-update' policy.pk %}" class="btn btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No policies found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div class="tab-pane fade" id="statistics">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Policy Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">Total Policies</h6>
+                                        <h2 class="card-title mb-0">{{ total_policies }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">Published Policies</h6>
+                                        <h2 class="card-title mb-0">{{ published_policies }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">Draft Policies</h6>
+                                        <h2 class="card-title mb-0">{{ draft_policies }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-subtitle mb-2 text-muted">Needs Review</h6>
+                                        <h2 class="card-title mb-0">{{ review_needed }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

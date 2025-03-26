@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Policies - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h1 class="h2">Policies</h1>
+    </div>
+    {% if user.profile.is_admin or user.profile.is_moderator %}
+    <div class="col-auto">
+        <a href="{% url 'policies:policy-create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Policy
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Search Form -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3" hx-get="{% url 'policies:htmx-policy-list' %}" hx-target="#policy-list" hx-trigger="submit, change">
+            <div class="col-md-4">
+                {{ search_form.query }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.category }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.status }}
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Policy List -->
+<div id="policy-list">
+    {% include "policies/partials/policy_list.html" %}
+</div>
+
+<!-- Pagination -->
+{% if is_paginated %}
+<nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+            </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

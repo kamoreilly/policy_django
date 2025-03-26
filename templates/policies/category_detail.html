@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">{{ category.name }}</h3>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ category.description }}</p>
+                </div>
+                
+                {% if policies %}
+                <div class="card-body pt-0">
+                    <h5 class="mb-3">Policies in this category</h5>
+                    <div class="row">
+                        {% for policy in policies %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ policy.title }}</h6>
+                                    <p class="card-text text-muted small">
+                                        {{ policy.summary|truncatechars:100 }}
+                                    </p>
+                                    <a href="{% url 'policies:policy-detail' policy.pk %}" class="btn btn-outline-primary btn-sm">
+                                        View Policy <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="card-body">
+                    <div class="alert alert-info">No policies found in this category.</div>
+                </div>
+                {% endif %}
+                <div class="card-footer">
+                    <a href="{% url 'policies:category-list' %}" class="btn btn-secondary">
+                        Back to Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

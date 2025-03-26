@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-user me-2"></i>My Profile</h4>
+            </div>
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-5x text-primary"></i>
+                </div>
+                <h5 class="mb-0">{{ user.get_full_name }}</h5>
+                <p class="text-muted">{{ user.email }}</p>
+                <div class="badge bg-primary mb-3">{{ user.profile.get_role_display }}</div>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Username:</span>
+                        <span class="text-primary">{{ user.username }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Joined:</span>
+                        <span class="text-primary">{{ user.date_joined|date:"F j, Y" }}</span>
+                    </li>
+                    {% if user.profile.department %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Department:</span>
+                        <span class="text-primary">{{ user.profile.department }}</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Profile</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="{{ user_form.department.id_for_label }}" class="form-label">Department</label>
+                        {{ user_form.department }}
+                        {% if user_form.department.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in user_form.department.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ user_form.bio.id_for_label }}" class="form-label">Bio</label>
+                        {{ user_form.bio }}
+                        {% if user_form.bio.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in user_form.bio.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="form-text">Tell us a bit about yourself.</div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if user.profile.bio %}
+        <div class="card mt-4 shadow">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">About Me</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ user.profile.bio }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

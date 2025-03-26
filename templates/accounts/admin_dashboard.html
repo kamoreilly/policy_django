@@ -1,0 +1,298 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3">
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-th-large me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="#policies" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                    <i class="fas fa-file-alt me-2"></i>Manage Policies
+                </a>
+                <a href="#categories" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-folder me-2"></i>Manage Categories
+                </a>
+                <a href="#users" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                    <i class="fas fa-users me-2"></i>Manage Users
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics Card -->
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Total Policies:</span>
+                    <span class="badge bg-primary">{{ total_policies }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Published:</span>
+                    <span class="badge bg-success">{{ published_policies }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Draft:</span>
+                    <span class="badge bg-warning">{{ draft_policies }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span>Needs Review:</span>
+                    <span class="badge bg-danger">{{ review_needed }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Pending Users:</span>
+                    <span class="badge bg-info">{{ pending_users }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+        <!-- Pending Users Alert -->
+        {% if pending_users > 0 %}
+        <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-user-clock me-2"></i>
+            <strong>{{ pending_users }} user{{ pending_users|pluralize }} pending approval!</strong>
+            <a href="{% url 'user-approval' %}" class="alert-link">Review pending registrations</a>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        <div class="tab-content">
+            <!-- Policies Tab -->
+            <div class="tab-pane fade show active" id="policies">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Policy Management</h5>
+                        <a href="{% url 'policies:policy-create' %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-plus me-1"></i>New Policy
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search and Filter -->
+                        <div class="row mb-3">
+                            <div class="col">
+                                <form method="get" class="row g-3" hx-get="{% url 'policies:htmx-policy-list' %}" hx-target="#policy-list" hx-trigger="submit, change">
+                                    <div class="col-md-4">
+                                        {{ search_form.query }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ search_form.category }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ search_form.status }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Policy List Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Policy Number</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                        <th>Review Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for policy in policies %}
+                                    <tr>
+                                        <td>{{ policy.policy_number }}</td>
+                                        <td>{{ policy.title }}</td>
+                                        <td>{{ policy.category.name }}</td>
+                                        <td>
+                                            <span class="badge bg-{% if policy.status == 'published' %}success{% elif policy.status == 'draft' %}warning{% else %}secondary{% endif %}">
+                                                {{ policy.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{ policy.review_date }}
+                                            {% if policy.needs_review %}
+                                            <span class="badge bg-danger ms-1">Review Needed</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'policies:policy-detail' policy.pk %}" class="btn btn-outline-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'policies:policy-update' policy.pk %}" class="btn btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'policies:policy-delete' policy.pk %}" class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No policies found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Tab -->
+            <div class="tab-pane fade" id="categories">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-folder me-2"></i>Category Management</h5>
+                        <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#newCategoryModal">
+                            <i class="fas fa-plus me-1"></i>New Category
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Policies</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for category in categories %}
+                                    <tr>
+                                        <td>{{ category.name }}</td>
+                                        <td>{{ category.description|truncatewords:20 }}</td>
+                                        <td>{{ category.policies.count }}</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button class="btn btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center">No categories found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-pane fade" id="users">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-users me-2"></i>User Management</h5>
+                        <a href="{% url 'user-approval' %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-user-check me-1"></i>Manage Approvals
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Department</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.get_full_name }}</td>
+                                        <td>
+                                            <span class="badge {% if user.profile.is_admin %}bg-danger{% elif user.profile.is_moderator %}bg-warning{% else %}bg-info{% endif %}">
+                                                {{ user.profile.get_role_display }}
+                                            </span>
+                                        </td>
+                                        <td>{{ user.profile.department|default:"N/A" }}</td>
+                                        <td>
+                                            <span class="badge {% if user.profile.approval_status == 'approved' %}bg-success{% elif user.profile.approval_status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}">
+                                                {{ user.profile.get_approval_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'user-edit' user.pk %}" class="btn btn-outline-secondary">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'user-delete' user.pk %}" class="btn btn-outline-danger">
+                                                    <i class="fas fa-user-times"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">No users found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- New Category Modal -->
+<div class="modal fade" id="newCategoryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'policies:category-create' %}">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="category-name" class="form-label">Category Name</label>
+                        <input type="text" class="form-control" id="category-name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="category-description" name="description" rows="3"></textarea>
+                    </div>
+                    <div class="text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

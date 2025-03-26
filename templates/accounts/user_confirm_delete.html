@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete User - Policy Hub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Delete User</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="mb-3">Are you sure you want to delete this user?</h5>
+                
+                <div class="alert alert-warning">
+                    <p class="mb-0">
+                        <strong>Warning:</strong> This action cannot be undone. The user will permanently lose access to their account.
+                    </p>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">User Details</h6>
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Username:</dt>
+                            <dd class="col-sm-8">{{ object.username }}</dd>
+                            
+                            <dt class="col-sm-4">Name:</dt>
+                            <dd class="col-sm-8">{{ object.get_full_name }}</dd>
+                            
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">{{ object.email }}</dd>
+                            
+                            <dt class="col-sm-4">Role:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-{% if object.profile.is_admin %}danger{% elif object.profile.is_moderator %}warning{% else %}info{% endif %}">
+                                    {{ object.profile.get_role_display }}
+                                </span>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'admin-dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash me-2"></i>Delete User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

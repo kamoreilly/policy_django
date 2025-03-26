@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+
+{% block title %}Policy Hub - Modern Policy Management{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes timelineProgress {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+
+  :root {
+    --primary-color: #0d6efd;
+    --secondary-color: #6c757d;
+    --accent-color: #0a58ca;
+    --text-color: #212529;
+    --light-bg: #f8f9fa;
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition-smooth: all 0.3s ease;
+  }
+
+  .hero-section {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 8rem 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+  }
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2"/></svg>') repeat;
+    opacity: 0.4;
+  }
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+  .hero-subtitle {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+  }
+  .feature-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition-smooth);
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  .feature-card:hover {
+    transform: translateY(-5px);
+  }
+  .feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+  }
+  .stats-section {
+    background-color: var(--light-bg);
+    padding: 4rem 0;
+  }
+  .stat-card {
+    text-align: center;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 1rem;
+    box-shadow: var(--box-shadow);
+    transition: var(--transition-smooth);
+  }
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  .cta-section {
+    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
+    color: white;
+    padding: 4rem 0;
+    text-align: center;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-section position-relative overflow-hidden">
+  <div class="container position-relative z-index-1">
+    <div class="row align-items-center justify-content-center min-vh-80 text-center">
+      <div class="col-lg-7">
+        <h1 class="display-3 fw-bold text-white mb-4 animate__animated animate__fadeInUp animate__fast">Revolutionize Your Policy Management</h1>
+        <p class="lead text-white mb-5 animate__animated animate__fadeInUp animate__fast">Empower your organization with our cutting-edge platform designed to streamline policy creation, ensure compliance, and drive operational excellence.</p>
+        <div class="d-flex gap-3 animate__animated animate__fadeInUp animate__fast justify-content-center">
+          <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5 hover-effect">Get Started</a>
+          <a href="#features" class="btn btn-outline-light btn-lg px-5 hover-effect">Learn More</a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-illustration animate__animated animate__fadeInRight animate__fast">
+          <div class="glass-morphism-effect"></div>
+          <div class="dynamic-glow"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-5 text-primary">Why Choose Policy Hub?</h2>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="bi bi-shield-check text-primary mb-3" style="font-size: 2rem;"></i>
+            <h3 class="h5 mb-3">Security First</h3>
+            <p class="text-muted mb-0">Implement robust security measures to protect your organization's assets and data.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="bi bi-graph-up-arrow text-primary mb-3" style="font-size: 2rem;"></i>
+            <h3 class="h5 mb-3">Continuous Improvement</h3>
+            <p class="text-muted mb-0">Regular updates and refinements to keep your policies current and effective.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="bi bi-check2-circle text-primary mb-3" style="font-size: 2rem;"></i>
+            <h3 class="h5 mb-3">Compliance Assured</h3>
+            <p class="text-muted mb-0">Stay aligned with industry regulations and best practices.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card h-100 border-0 shadow-sm">
+          <div class="card-body text-center">
+            <i class="bi bi-people text-primary mb-3" style="font-size: 2rem;"></i>
+            <h3 class="h5 mb-3">Expert Support</h3>
+            <p class="text-muted mb-0">Access to experienced professionals for guidance and implementation.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-light py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <h2 class="display-4 text-primary fw-bold mb-3">500+</h2>
+            <h3 class="h5 mb-3">Organizations Served</h3>
+            <p class="text-muted mb-0">Trusted by leading companies worldwide</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <h2 class="display-4 text-primary fw-bold mb-3">98%</h2>
+            <h3 class="h5 mb-3">Compliance Rate</h3>
+            <p class="text-muted mb-0">Maintaining high standards across policies</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center">
+            <h2 class="display-4 text-primary fw-bold mb-3">24/7</h2>
+            <h3 class="h5 mb-3">Expert Support</h3>
+            <p class="text-muted mb-0">Always available to assist you</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="py-5 bg-white overflow-hidden">
+  <div class="container">
+    <div class="row align-items-center g-5" style="animation: fadeInUp 0.8s ease-out;">
+      <div class="col-lg-6">
+        <div class="d-flex align-items-center mb-4">
+          <div class="flex-shrink-0">
+            <i class="bi bi-building-check text-primary" style="font-size: 3rem;"></i>
+          </div>
+          <div class="flex-grow-1 ms-4">
+            <h2 class="text-primary mb-0">About Policy Hub</h2>
+            <p class="text-muted">Your Partner in Effective Policy Management</p>
+          </div>
+        </div>
+        <p class="lead mb-4">At Policy Hub, we're revolutionizing how organizations manage their policies. Our comprehensive platform combines cutting-edge technology with industry best practices to deliver a seamless policy management experience.</p>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body p-4">
+                <i class="bi bi-pencil-square text-primary mb-3" style="font-size: 2rem;"></i>
+                <h3 class="h5 mb-3">Intuitive Creation</h3>
+                <p class="text-muted mb-0">Streamlined policy drafting with smart templates and guidance</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body p-4">
+                <i class="bi bi-people text-primary mb-3" style="font-size: 2rem;"></i>
+                <h3 class="h5 mb-3">Collaboration</h3>
+                <p class="text-muted mb-0">Real-time co-authoring and version control for teams</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body p-4">
+                <i class="bi bi-shield-check text-primary mb-3" style="font-size: 2rem;"></i>
+                <h3 class="h5 mb-3">Compliance</h3>
+                <p class="text-muted mb-0">Automated tracking and alerts for regulatory requirements</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm">
+              <div class="card-body p-4">
+                <i class="bi bi-bar-chart text-primary mb-3" style="font-size: 2rem;"></i>
+                <h3 class="h5 mb-3">Insights</h3>
+                <p class="text-muted mb-0">Comprehensive analytics and reporting dashboard</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 text-center">
+        <div class="position-relative">
+          <div class="policy-hub-illustration" style="width: 100%; height: 100%; background: radial-gradient(circle, rgba(13,110,253,0.1) 0%, rgba(13,110,253,0.05) 100%); border-radius: 0.3rem;"></div>
+          <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+            <div class="bg-white p-4 rounded-3 shadow-sm">
+              <h3 class="text-primary mb-3">Our Milestones</h3>
+              <div class="timeline">
+                <div class="timeline-item" style="opacity: 0; animation: fadeInUp 0.8s forwards;">
+                  <div class="timeline-icon"><i class="bi bi-rocket text-primary"></i></div>
+                  <div class="timeline-content" style="position: relative;">
+              <div class="timeline-progress" style="position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary-color); animation: timelineProgress 1s ease-out forwards;"></div>
+                    <h5>2018</h5>
+                    <p>Founded with a vision to revolutionize policy management</p>
+                  </div>
+                </div>
+                <div class="timeline-item" style="opacity: 0; animation: fadeInUp 0.8s forwards;">
+                  <div class="timeline-icon"><i class="bi bi-people text-primary"></i></div>
+                  <div class="timeline-content" style="position: relative;">
+              <div class="timeline-progress" style="position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary-color); animation: timelineProgress 1s ease-out forwards;"></div>
+                    <h5>2019</h5>
+                    <p>Onboarded first 100 clients</p>
+                  </div>
+                </div>
+                <div class="timeline-item" style="opacity: 0; animation: fadeInUp 0.8s forwards;">
+                  <div class="timeline-icon"><i class="bi bi-trophy text-primary"></i></div>
+                  <div class="timeline-content" style="position: relative;">
+              <div class="timeline-progress" style="position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary-color); animation: timelineProgress 1s ease-out forwards;"></div>
+                    <h5>2020</h5>
+                    <p>Won Best Policy Management Solution award</p>
+                  </div>
+                </div>
+                <div class="timeline-item" style="opacity: 0; animation: fadeInUp 0.8s forwards;">
+                  <div class="timeline-icon"><i class="bi bi-globe text-primary"></i></div>
+                  <div class="timeline-content" style="position: relative;">
+              <div class="timeline-progress" style="position: absolute; bottom: 0; left: 0; height: 2px; background: var(--primary-color); animation: timelineProgress 1s ease-out forwards;"></div>
+                    <h5>2021</h5>
+                    <p>Expanded to international markets</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bg-primary text-white py-5">
+  <div class="container text-center py-4">
+    <h2 class="display-5 fw-bold mb-4">Ready to Transform Your Policy Management?</h2>
+    <p class="lead mb-4">Join hundreds of organizations that trust Policy Hub for their policy management needs.</p>
+    <a href="{% url 'register' %}" class="btn btn-light btn-lg px-5">Start Your Journey Today</a>
+  </div>
+</section>
+{% endblock %}

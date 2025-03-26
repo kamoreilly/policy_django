@@ -1,0 +1,61 @@
+# Django
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+static/
+
+# Virtual Environment
+venv/
+.env/
+
+# IDE
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# BAT Files
+*.bat
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+.docker/
+
+# Deployment artifacts
+*.env.local
+*.secret
+*.key
+deploy/
+build/
+dist/
+*.egg-info/
+*.exe
+
+# Logs and diagnostics
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development overrides
+local_settings.py
+override/
+
+# Backup files
+*.bak
+*.swp
+*.swo
+*.sqlite3.backup
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
