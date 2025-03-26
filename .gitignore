@@ -39,6 +39,7 @@ build/
 dist/
 *.egg-info/
 *.exe
+*.rules
 
 # Logs and diagnostics
 logs/
